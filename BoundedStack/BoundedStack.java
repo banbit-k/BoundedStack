@@ -7,8 +7,9 @@ import java.util.*;
 public class BoundedStack {
 //       ===== representation =====
     private final List<String> license ;
-    private final int capacity  ;
-    
+    public static final int capacity = 100 ;
+    public static final int MAX_LEN = 8;
+
     /** 
     //AF license คือ เลขป้ายทะเบียนรถ
     //     capacity คือ จำนวนตัวอักษร
@@ -16,7 +17,7 @@ public class BoundedStack {
     //RI 1. license != null                                  (ต้องมีอยู่จริง)
     //   2. ไม่มีสมาชิกใน license เป็น null                    (ไม่มีlicenseใดเป็น null)
     //   3. ไม่มีสมาชิกใน license เป็นสตริงว่าง "" และ ไม่มีสมาชิกใน license ซ้ำกัน       (ไม่มีlicenseที่เป็นสตริงว่างหรือlicenseห้ามซ้ำกัน)
-    //   4. capacity >= 0                                     (ความจุต้องไม่ติดลบ)
+    //   4. ตัวอักษร license ต้องไม่เกิน MAX_LEN                   (ความจุต้องไม่เกิน 8 ตัวอักษร)
     //   5. license.size() <= capacity                        (ห้ามเกินความจุ)
     //SF
     //   - license ถูกประกาศเป็น private final จึงไม่มีการเปลี่ยนของ field นี้ได้จากภายนอก
@@ -30,43 +31,37 @@ public class BoundedStack {
    
     private void checkRep() {
         assert license != null : "license is not null";
-        assert license.size() <= capacity;
-        assert capacity >= 0 : "capacity must not be negative";
+        assert license.size() <= capacity : "license count must not exceed capacity";
+    
+        //assert capacity > 0 : "capacity must be positive";
         Set<String> seen = new HashSet<>();
         for (String s : license) {
             assert s != null : "license ต้องไม่มีสมาชิกเป็น null";
             assert s != "" : "license ต้องไม่มีสมาชิกเป็นสตริงว่าง";
+            assert s.length() <= MAX_LEN : "license ต้องไม่เกิน 8 ตัวอักษร";
             assert seen.add(s) : "Dupplicate license: " + s;
         }
 
      }
     // ===== Creator =====
     
-    public BoundedStack () {
+    public BoundedStack() {
         this.license = new ArrayList<>();
-        this.capacity = 8;
+        //this.capacity = 8;
         checkRep();
     } 
     /**
-     * @param initial รายชื่อเพลงเริ่มต้น ต้องไม่ซ้ำและไม่เกิน capacity 
+     * @param initial รายชื่อlicense เริ่มต้น ต้องไม่ซ้ำและไม่เกิน capacity
      * @throws IllegalArgumentException ถ้า initial ผิดเงื่อนไข
      */
-    public  BoundedStack(List<String> initial,int capacity) {
-       if (initial == null) {
-            throw new IllegalArgumentException("initial must not be null");
+    public BoundedStack(List<String> initial) {
+       if (initial == null || initial.size() > capacity) throw new IllegalArgumentException("initial must not be null or initial must not exceed capacity");
+        Set<String> seen = new HashSet<>();
+       for (String s : initial) {
+            if (s == null || s == "" || s.length() > MAX_LEN) throw new IllegalArgumentException("initial must not contain null or empty license or license must not exceed 8 characters");
+            if (!seen.add(s)) throw new IllegalArgumentException("initial must not contain duplicate license");
         }
-        for (String s : initial) {
-            if (s == null || s.isEmpty()) {
-                throw new IllegalArgumentException("initial must not contain null or empty license");
-            }
-        }
-        if (new HashSet<>(initial).size() != initial.size()) {
-            throw new IllegalArgumentException("initial must not contain duplicate songs");
-        }
-        if (initial.size() > capacity) {
-            throw new IllegalArgumentException("initial must not exceed capacity");
-        }
-        this.capacity = capacity;
+        //this.capacity = capacity;
         this.license = new ArrayList<>(initial); 
         checkRep();
  }
@@ -74,17 +69,12 @@ public class BoundedStack {
  /**  
  * เพิ่ม s เข้าไปบนสุดของสแตก
  * @param s สมาชิกที่จะ push, ต้องไม่เป็น null
- * @return true ถ้า push สำเร็จ
+ * @return true ถ้า push สำเร็จ, false ถ้า s ซ้ำกับสมาชิกที่มีอยู่แล้วหรือสแตกเต็มแล้ว
  * @throws IllegalArgumentException ถ้า s เป็น null
- * @throws IllegalStateException ถ้าสแตกเต็มแล้ว (size() == capacity)
  */
 public boolean push(String s) {
-    if (s == null) {
-        throw new IllegalArgumentException("cannot push null");
-    }
-    if (license.size() >= capacity) {
-        throw new IllegalStateException("stack is full, capacity = " + capacity);
-    }
+    if (s == null || s == "") throw new IllegalArgumentException("cannot push null or empty license");
+    if (license.size() >= capacity || license.contains(s)) return false;
     license.add(s);
     checkRep();
     return true;
@@ -94,6 +84,8 @@ public boolean push(String s) {
      * @return true ลบสำเร็จ, false ถ้าไม่พบ
      */
     public boolean remove(String licenses) {
+        if (!license.contains(licenses)) return false;
+
         boolean removed = license.remove(licenses);
         checkRep();
         return removed;
@@ -121,7 +113,7 @@ public boolean push(String s) {
     public BoundedStack shuffled() {
         List<String> copy = new ArrayList<>(license);
         Collections.shuffle(copy);
-        return new BoundedStack(copy, capacity);
+        return new BoundedStack(copy);
     }
 
     @Override

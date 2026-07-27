@@ -1,7 +1,6 @@
 import java.util.*;
 // ตวรจสอบทะเบียนรถ
 /**
- * 
  * BoundedStack คือสแตกที่เก็บ String ได้ไม่เกิน capacity ตัว
  * ที่กำหนดตอนสร้าง 
  */
@@ -10,7 +9,6 @@ public class BoundedStack {
     private final List<String> license ;
     private final int capacity  ;
     /** 
-     
     //AF license คือ เลขป้ายทะเบียนรถ
     //     capacity คือ จำนวนตัวอักษร
     
@@ -41,29 +39,37 @@ public class BoundedStack {
         }
 
      }
-
-     /**
-     * @param capacity ความจุสูงสุดของสแตก, ต้อง >= 0
-     * @throws IllegalArgumentException ถ้า capacity < 0
-     */
+    // ===== Creator =====
+    
     public BoundedStack(int capacity) {
-         if (capacity < 0) {
-            throw new IllegalArgumentException("capacity must not be negative: " + capacity);
-        }
         this.license = new ArrayList<>();
         this.capacity = capacity;
         checkRep();
-    }
-  // ===== Creator =====
-
-
-
-
-
-
-
-
-
+    } 
+   /**
+     * @param initial รายชื่อเพลงเริ่มต้น ต้องไม่ซ้ำและไม่เกิน MAX_SONGS
+     * @return 
+     * @throws IllegalArgumentException ถ้า initial ผิดเงื่อนไข
+     */
+    public void Playlist(List<String> initial) {
+       if (initial == null) {
+            throw new IllegalArgumentException("initial must not be null");
+        }
+        for (String s : initial) {
+            if (s == null || s.isEmpty()) {
+                throw new IllegalArgumentException("initial must not contain null or empty songs");
+            }
+        }
+        if (new HashSet<>(initial).size() != initial.size()) {
+            throw new IllegalArgumentException("initial must not contain duplicate songs");
+        }
+        if (initial.size() > capacity) {
+            throw new IllegalArgumentException("initial must not exceed MAX_SONGS");
+        }
+ 
+        this.capacity = new ArrayList<>(initial); 
+        checkRep();
+ }
     // ===== Mutators =====
  /**  
  * เพิ่ม s เข้าไปบนสุดของสแตก

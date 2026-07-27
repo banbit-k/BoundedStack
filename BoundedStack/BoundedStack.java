@@ -41,32 +41,30 @@ public class BoundedStack {
      }
     // ===== Creator =====
     
-    public BoundedStack(int capacity) {
+    public BoundedStack () {
         this.license = new ArrayList<>();
-        this.capacity = capacity;
         checkRep();
     } 
    /**
-     * @param initial รายชื่อเพลงเริ่มต้น ต้องไม่ซ้ำและไม่เกิน MAX_SONGS
-     * @return 
+     * @param initial รายชื่อเพลงเริ่มต้น ต้องไม่ซ้ำและไม่เกิน capacity 
      * @throws IllegalArgumentException ถ้า initial ผิดเงื่อนไข
      */
-    public void Playlist(List<String> initial) {
+    public  BoundedStack(List<String> initial,int capacity) {
        if (initial == null) {
             throw new IllegalArgumentException("initial must not be null");
         }
         for (String s : initial) {
             if (s == null || s.isEmpty()) {
-                throw new IllegalArgumentException("initial must not contain null or empty songs");
+                throw new IllegalArgumentException("initial must not contain null or empty license");
             }
         }
         if (new HashSet<>(initial).size() != initial.size()) {
             throw new IllegalArgumentException("initial must not contain duplicate songs");
         }
         if (initial.size() > capacity) {
-            throw new IllegalArgumentException("initial must not exceed MAX_SONGS");
+            throw new IllegalArgumentException("initial must not exceed capacity");
         }
- 
+        this.capacity = capacity;
         this.capacity = new ArrayList<>(initial); 
         checkRep();
  }

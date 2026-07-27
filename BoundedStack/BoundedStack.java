@@ -1,34 +1,116 @@
 import java.util.*;
-
+// ตวรจสอบทะเบียนรถ
 /**
  * 
- * BoundedStack คือ-------------------------
+ * BoundedStack คือสแตกที่เก็บ String ได้ไม่เกิน capacity ตัว
+ * ที่กำหนดตอนสร้าง 
  */
 public class BoundedStack {
-
-    private final List<String> elements ;
-    private final int capacity ;
-    //AF
-    //RI
+//       ===== representation =====
+    private final List<String> license ;
+    private final int capacity  ;
+    /** 
+     
+    //AF license คือ เลขป้ายทะเบียนรถ
+    //     capacity คือ จำนวนตัวอักษร
+    
+    //RI 1. license != null                                  (ต้องมีอยู่จริง)
+    //   2. ไม่มีสมาชิกใน license เป็น null                    (ไม่มีlicenseใดเป็น null)
+    //   3. ไม่มีสมาชิกใน license เป็นสตริงว่าง "" และ ไม่มีสมาชิกใน license ซ้ำกัน       (ไม่มีlicenseที่เป็นสตริงว่างหรือlicenseห้ามซ้ำกัน)
+    //   4. capacity >= 0                                     (ความจุต้องไม่ติดลบ)
+    //   5. license.size() <= capacity                        (ห้ามเกินความจุ)
     //SF
-    //
+    //   - license ถูกประกาศเป็น private final จึงไม่มีการเปลี่ยนของ field นี้ได้จากภายนอก
+    //   - constructor ที่รับ List<String> จากภายนอก จะคัดลอกข้อมูลใส่ ArrayList ใหม่
+    //     แทนที่จะเก็บ ของ list ที่ส่งมาโดยตรง ดังนั้นการแก้ list ต้นฉบับ
+    //     ของ client ในภายหลังจะไม่กระทบ rep 
+    //   - เมธอด songs() (ขาออก) คืนค่าเป็นสำเนา (copy) ของ songs ไม่ใช่ reference ตรง ๆ
+    //     ดังนั้นผู้เรียกจะแก้ไข list ที่คืนกลับไปไม่ส่งผลต่อ rep ภายใน
+    //   - String เป็น immutable อยู่แล้ว จึงไม่ต้องกังวลเรื่องการแก้ไของค์ประกอบภายใน list
+    */
+   
+    private void checkRep() {
+        assert license != null : "license is not null";
+        assert license.size() <= capacity;
+        assert capacity >= 0 : "capacity must not be negative";
+        Set<String> seen = new HashSet<>();
+        for (String s : license) {
+            assert s != null : "license ต้องไม่มีสมาชิกเป็น null";
+            assert s != "" : "license ต้องไม่มีสมาชิกเป็นสตริงว่าง";
+            assert seen.add(s) : "Dupplicate license: " + s;
+        }
 
-    /**
-     * 
-     * @oaram capcity
-     */
- public BoundedStack(int capacity){
-    this.elements  = new  ArrayList<>();
-    this.capacity = capacity ;
- } 
-    /**
-     * 
-     * @param s
-     * 
-     */
- public void push(String s){
+     }
 
- }
+     /**
+     * @param capacity ความจุสูงสุดของสแตก, ต้อง >= 0
+     * @throws IllegalArgumentException ถ้า capacity < 0
+     */
+    public BoundedStack(int capacity) {
+         if (capacity < 0) {
+            throw new IllegalArgumentException("capacity must not be negative: " + capacity);
+        }
+        this.license = new ArrayList<>();
+        this.capacity = capacity;
+        checkRep();
+    }
+  // ===== Creator =====
+
+
+
+
+
+
+
+
+
+    // ===== Mutators =====
+ /**  
+ * เพิ่ม s เข้าไปบนสุดของสแตก
+ * @param s สมาชิกที่จะ push, ต้องไม่เป็น null
+ * @return 
+ * @throws IllegalArgumentException ถ้า s เป็น null
+ * @throws IllegalStateException ถ้าสแตกเต็มแล้ว (size() == capacity)
+ */
+public boolean push(String s) {
+    if (s == null) {
+        throw new IllegalArgumentException("cannot push null");
+    }
+    if (license.size() >= capacity) {
+        throw new IllegalStateException("stack is full, capacity = " + capacity);
+    }
+    license.add(s);
+    checkRep();
+    return true;
+}
+/**
+     * @param licenses เลขป้ายทะเบียนรถ
+     * @return true ลบสำเร็จ, false ถ้าไม่พบ
+     */
+    public boolean remove(String licenses) {
+        boolean removed = license.remove(licenses);
+        checkRep();
+        return removed;
+    }
+
+    //===== Observers =====
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+    // ===== Producer =====
+
+
  
 
 

@@ -43,6 +43,7 @@ public class BoundedStack {
     
     public BoundedStack () {
         this.license = new ArrayList<>();
+        this.capacity = 8;
         checkRep();
     } 
    /**
@@ -65,7 +66,7 @@ public class BoundedStack {
             throw new IllegalArgumentException("initial must not exceed capacity");
         }
         this.capacity = capacity;
-        this.capacity = new ArrayList<>(initial); 
+        this.license = new ArrayList<>(initial); 
         checkRep();
  }
     // ===== Mutators =====

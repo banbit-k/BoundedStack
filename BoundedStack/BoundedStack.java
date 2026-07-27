@@ -8,6 +8,7 @@ public class BoundedStack {
 //       ===== representation =====
     private final List<String> license ;
     private final int capacity  ;
+    
     /** 
     //AF license คือ เลขป้ายทะเบียนรถ
     //     capacity คือ จำนวนตัวอักษร
@@ -46,7 +47,7 @@ public class BoundedStack {
         this.capacity = 8;
         checkRep();
     } 
-   /**
+    /**
      * @param initial รายชื่อเพลงเริ่มต้น ต้องไม่ซ้ำและไม่เกิน capacity 
      * @throws IllegalArgumentException ถ้า initial ผิดเงื่อนไข
      */
@@ -73,7 +74,7 @@ public class BoundedStack {
  /**  
  * เพิ่ม s เข้าไปบนสุดของสแตก
  * @param s สมาชิกที่จะ push, ต้องไม่เป็น null
- * @return 
+ * @return true ถ้า push สำเร็จ
  * @throws IllegalArgumentException ถ้า s เป็น null
  * @throws IllegalStateException ถ้าสแตกเต็มแล้ว (size() == capacity)
  */
@@ -88,7 +89,7 @@ public boolean push(String s) {
     checkRep();
     return true;
 }
-/**
+    /**
      * @param licenses เลขป้ายทะเบียนรถ
      * @return true ลบสำเร็จ, false ถ้าไม่พบ
      */
@@ -100,37 +101,31 @@ public boolean push(String s) {
 
     //===== Observers =====
 
+    public int size() {
+        return license.size();
+    }
 
+    public boolean contains(String licenses) {
+        return license.contains(licenses);
+    }
 
-
-
-
-
-
-
-
-
-
-
+    public List<String> license() {
+        return new ArrayList<>(license);
+    }
 
     // ===== Producer =====
+    /**
+    * สร้าง BoundedStack ใหม่ที่มีสมาชิกเหมือนเดิมแต่สลับลำดับ
+     * @return BoundedStack ใหม่ที่สลับลำดับแล้ว
+     */
+    public BoundedStack shuffled() {
+        List<String> copy = new ArrayList<>(license);
+        Collections.shuffle(copy);
+        return new BoundedStack(copy, capacity);
+    }
 
-
- 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
+    @Override
+    public String toString() {
+        return license.toString();
+    }
 }

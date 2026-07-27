@@ -20,10 +20,10 @@ public class BoundedStackTest {
         assert assertsOn = true;
         if (!assertsOn) {
             System.out.println("WARNING: assertions disabled"
-                    + " - re-run with: java -ea PlaylistTest\n");
+                    + " - re-run with: java -ea BoundedStackTest\n");
         }
 
-        System.out.println("=== Playlist Test Suite ===\n");
+        System.out.println("=== BoundedStack Test Suite ===\n");
 
 
         System.out.println("\n=== Summary ===");

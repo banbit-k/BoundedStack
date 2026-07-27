@@ -58,7 +58,8 @@ public class BoundedStack {
        if (initial == null || initial.size() > capacity) throw new IllegalArgumentException("initial must not be null or initial must not exceed capacity");
         Set<String> seen = new HashSet<>();
        for (String s : initial) {
-            if (s == null || s == "" || s.length() > MAX_LEN) throw new IllegalArgumentException("initial must not contain null or empty license or license must not exceed 8 characters");
+            if (s == null || s == "" ) throw new IllegalArgumentException("initial must not contain null or empty license");
+            if (s.length() > MAX_LEN) throw new IllegalArgumentException("initial must not contain license exceeding 8 characters");
             if (!seen.add(s)) throw new IllegalArgumentException("initial must not contain duplicate license");
         }
         //this.capacity = capacity;
@@ -74,6 +75,7 @@ public class BoundedStack {
  */
 public boolean push(String s) {
     if (s == null || s == "") throw new IllegalArgumentException("cannot push null or empty license");
+    if (s.length() > MAX_LEN) throw new IllegalArgumentException("cannot push license exceeding 8 characters");
     if (license.size() >= capacity || license.contains(s)) return false;
     license.add(s);
     checkRep();

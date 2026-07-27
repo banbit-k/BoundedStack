@@ -46,7 +46,7 @@ public class BoundedStackTest {
         }
     }
 
-    // --- Partition: ว่าง, มีสมาชิก, เต็ม ---
+    // --- Partition: ว่าง, มีสมาชิก, input ผิดเงื่อนไข ---
     private static void testCreators() {
         System.out.println("-- Creators --");
 
@@ -54,6 +54,12 @@ public class BoundedStackTest {
 
         check("license() -> empty", empty.size() == 0);
         check("license() -> contains nothing", !empty.contains("anything"));
+
+        BoundedStack b = new BoundedStack(Arrays.asList("Aaaaaaaa", "B", "C"));
+        check("new(list) -> size 3", b.size() == 3);
+        check("new(list) -> contains B", b.contains("B"));
+        check("new(list) -> preserves order",
+                b.license().equals(Arrays.asList("Aaaaaaaa", "B", "C")));
 
         boolean threw = false;
         try {

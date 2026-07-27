@@ -30,7 +30,7 @@ public class BoundedStackTest {
 
         testCreators();
         testAdd();
-        testRemove();
+        //testRemove();
         testObservers();
         testProducer();
         testExposure();
@@ -50,36 +50,22 @@ public class BoundedStackTest {
     private static void testCreators() {
         System.out.println("-- Creators --");
 
-        BoundedStack empty = new BoundedStack();
-
+        // เช็คว่าว่างหรือไม่
+        BoundedStack empty = new BoundedStack();   
         check("license() -> empty", empty.size() == 0);
         check("license() -> contains nothing", !empty.contains("anything"));
-
-        BoundedStack b = new BoundedStack(Arrays.asList("Aaaaaaaa", "B", "C"));
+        
+        // boundary: สร้างจาก list ที่มีสมาชิกไม่ซ้ำและไม่เกิน capacity และ ตัวอักษรไม่เกิน 8 ตัวอักษร และเรียงลำดับ
+        BoundedStack b = new BoundedStack(Arrays.asList("ABCD1234", "BADC2341", "CBDA341"));
         check("new(list) -> size 3", b.size() == 3);
-        check("new(list) -> contains B", b.contains("B"));
+        check("new(list) -> contains BADC2341", b.contains("BADC2341"));
         check("new(list) -> preserves order",
-                b.license().equals(Arrays.asList("Aaaaaaaa", "B", "C")));
-
-        boolean threw = false;
-        try {
-            new BoundedStack(Arrays.asList("A", "A"));
-        } catch (IllegalArgumentException e) {
-            threw = true;
-        }
-        check("new(duplicates license) -> throws IllegalArgumentException", threw);
-        /* 
-        check("new() -> empty", empty.size() == 0);
-        check("new() -> contains nothing", !empty.contains("anything"));
-
-        BoundedStack b = new BoundedStack(Arrays.asList("A", "B", "C"));
-        check("new(list) -> size 3", b.size() == 3);
-        check("new(list) -> contains B", b.contains("B"));
-        check("new(list) -> preserves order",
-                b.license().equals(Arrays.asList("A", "B", "C")));
+                b.license().equals(Arrays.asList("ABCD1234", "BADC2341", "CBDA341")));
+        check("every license has length <= 8", b.license().stream().allMatch(s -> s.length() <= 8));
 
         BoundedStack fromEmpty = new BoundedStack(new ArrayList<>());
         check("new(empty license) -> empty", fromEmpty.size() == 0);
+
         boolean threwDup = false;
         try {
             new BoundedStack(Arrays.asList("A", "A"));
@@ -103,6 +89,15 @@ public class BoundedStackTest {
             threwNullList = true;
         }
         check("new(null) -> throws IllegalArgumentException", threwNullList);
+
+        /* 
+        boolean threwLongLicense = false;
+        try {
+            new BoundedStack(Arrays.asList("ABCDE1234"));
+        } catch (IllegalArgumentException e) {
+            threwLongLicense = true;
+        }
+        check("new(long license) -> throws IllegalArgumentException", threwLongLicense);
         */
     }
 
@@ -111,18 +106,17 @@ public class BoundedStackTest {
         System.out.println("\n-- Add --");
 
         BoundedStack s = new BoundedStack();
-/*
-        check("add(A) -> returns true", s.push("A"));
-        check("add(A) -> size 1", s.size() == 1);
-        check("add(A) -> found by contains", s.contains("A"));
+        check("push(A) -> returns true", s.push("ABCD1234"));
+        check("push(A) -> size 1", s.size() == 1);
+        check("push(A) <= 8 characters", s.push("BADC2341") == true);
+        check("push(A) -> found by contains", s.contains("ABCD1234"));
 
-        s.push("B");
-        s.push("C");
-        check("add preserves insertion order",
-                s.license().equals(Arrays.asList("A", "B", "C")));
+        s.push("CBDA341");
+        check("push preserves insertion order",
+                s.license().equals(Arrays.asList("ABCD1234", "BADC2341", "CBDA341")));     
 
-        // เพลงซ้ำไม่ใช่ error — คืน false เฉย ๆ
-        check("add duplicate -> returns false", !s.push("A"));
+        // เลขทะเบียนซ้ำไม่ใช่ error — คืน false เฉย ๆ
+        check("add duplicate -> returns false", !s.push("ABCD1234"));
         check("failed add leaves size unchanged", s.size() == 3);
 
         // input ที่ผิดเงื่อนไขต้องโยน exception
@@ -147,41 +141,42 @@ public class BoundedStackTest {
         // boundary: เติมจนเต็มพอดีแล้วเติมเพิ่ม
         BoundedStack full = new BoundedStack();
         for (int i = 0; i < BoundedStack.capacity; i++) {
-            full.push("license" + i);
+            full.push("L" + i);
         }
         check("can fill up to capacity", full.size() == BoundedStack.capacity);
         check("add when full -> returns false", !full.push("one more"));
         check("full license stays at capacity",
                 full.size() == BoundedStack.capacity);
-    */
     }
 
+    /* 
     private static void testRemove() {
         System.out.println("\n-- Remove --");
-/*
-        BoundedStack s = new BoundedStack(Arrays.asList("A", "B", "C"));
-        check("remove(B) -> returns true", s.remove("B"));
+        
+        BoundedStack s = new BoundedStack(Arrays.asList("ABCD1234", "BADC2341", "CBDA341"));
+        check("remove(BADC2341) -> returns true", s.remove("BADC2341"));
         check("remove -> size decreases", s.size() == 2);
-        check("remove -> license is gone", !s.contains("B"));
+        check("remove -> license is gone", !s.contains("BADC2341"));
         check("remove keeps the others in order",
-                s.license().equals(Arrays.asList("A", "C")));
+                s.license().equals(Arrays.asList("ABCD1234", "CBDA341")));
 
         // ลบlicenseที่ไม่มีไม่ใช่ error — คืน false เฉย ๆ
         check("remove missing license -> returns false", !s.remove("nope"));
         check("failed remove leaves size unchanged", s.size() == 2);
 
         // boundary: ลบจนหมด
-        s.remove("A");
-        s.remove("C");
+        s.remove("ABCD1234");
+        s.remove("CBDA341");
         check("remove all -> empty", s.size() == 0);
-        check("remove on empty license -> returns false", !s.remove("A"));
-*/
-    }
+        check("remove on empty license -> returns false", !s.remove("ABCD1234"));
 
+    }
+    */
+    
     // --- Observer ต้องไม่มี side effect ---
     private static void testObservers() {
         System.out.println("\n-- Observers --");
-/* 
+        /* 
         BoundedStack s = new BoundedStack(Arrays.asList("A", "B"));
         check("size reports 2", s.size() == 2);
         check("contains finds an existing license", s.contains("A"));

@@ -75,7 +75,7 @@ public class BoundedStack {
  */
 public boolean push(String s) {
     if (s == null || s == "") throw new IllegalArgumentException("cannot push null or empty license");
-    if (s.length() > MAX_LEN) throw new IllegalArgumentException("cannot push license exceeding 8 characters");
+    if (s.length() > MAX_LEN ) return false; // ไม่ throw exception แต่ return false ถ้าเกิน 8 ตัวอักษร
     if (license.size() >= capacity || license.contains(s)) return false;
     license.add(s);
     checkRep();

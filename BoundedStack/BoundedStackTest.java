@@ -30,7 +30,7 @@ public class BoundedStackTest {
 
         testCreators();
         testAdd();
-        //testRemove();
+        testRemove();
         testObservers();
         testProducer();
         testExposure();
@@ -89,16 +89,6 @@ public class BoundedStackTest {
             threwNullList = true;
         }
         check("new(null) -> throws IllegalArgumentException", threwNullList);
-
-        /* 
-        boolean threwLongLicense = false;
-        try {
-            new BoundedStack(Arrays.asList("ABCDE1234"));
-        } catch (IllegalArgumentException e) {
-            threwLongLicense = true;
-        }
-        check("new(long license) -> throws IllegalArgumentException", threwLongLicense);
-        */
     }
 
     // --- Mutator:  ---
@@ -149,7 +139,6 @@ public class BoundedStackTest {
                 full.size() == BoundedStack.capacity);
     }
 
-    /* 
     private static void testRemove() {
         System.out.println("\n-- Remove --");
         
@@ -171,31 +160,31 @@ public class BoundedStackTest {
         check("remove on empty license -> returns false", !s.remove("ABCD1234"));
 
     }
-    */
+    
     
     // --- Observer ต้องไม่มี side effect ---
     private static void testObservers() {
         System.out.println("\n-- Observers --");
-        /* 
-        BoundedStack s = new BoundedStack(Arrays.asList("A", "B"));
+        
+        BoundedStack s = new BoundedStack(Arrays.asList("ABCD1234", "BADC2341"));
         check("size reports 2", s.size() == 2);
-        check("contains finds an existing license", s.contains("A"));
+        check("contains finds an existing license", s.contains("ABCD1234"));
         check("contains rejects a missing license", !s.contains("Z"));
         check("license returns the full list in order",
-                s.license().equals(Arrays.asList("A", "B")));
+                s.license().equals(Arrays.asList("ABCD1234", "BADC2341")));
 
         int before = s.size();
         s.size();
-        s.contains("A");
+        s.contains("ABCD1234");
         s.license();
         check("observers have no side effects", s.size() == before);
-*/
+
     }
 
     // --- Producer ต้องคืนตัวใหม่ ไม่แก้ตัวเดิม ---
     private static void testProducer() {
         System.out.println("\n-- Producer (shuffled) --");
-/*
+
         BoundedStack original = new BoundedStack(Arrays.asList("A", "B", "C", "D"));
         BoundedStack shuffled = original.shuffled();
 
@@ -218,14 +207,13 @@ public class BoundedStackTest {
         // boundary: shuffle เพลย์ลิสต์ว่างต้องไม่พัง
         BoundedStack emptyShuffled = new BoundedStack().shuffled();
         check("shuffling an empty bounded stack is safe", emptyShuffled.size() == 0);
-   */
+   
     }
 
     // --- ทดสอบว่าไม่เกิด representation exposure ---
     private static void testExposure() {
         System.out.println("\n-- Representation Exposure --");
 
-        /* 
         // ขาออก: แก้ list ที่ได้จาก songs() ต้องไม่กระทบ rep
         BoundedStack s = new BoundedStack();
         s.push("A");
@@ -245,7 +233,7 @@ public class BoundedStackTest {
                 s.license() != s.license());
 
         // ขาเข้า: แก้ list ที่ส่งให้ constructor ต้องไม่กระทบ rep
-        List<String> input = new ArrayList<String>(Arrays.asList("A", "B"));
+        List<String> input = new ArrayList<String>(Arrays.asList("ABCD1234", "BADC2341"));
         BoundedStack p = new BoundedStack(input);
 
         input.clear();
@@ -255,7 +243,6 @@ public class BoundedStackTest {
         input.add("injected");
         check("adding to constructor argument does not affect bounded stack",
                 !p.contains("injected"));
-                */
     }
 
 

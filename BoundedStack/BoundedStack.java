@@ -12,8 +12,8 @@ public class BoundedStack {
 
     /** 
     //AF license คือ เลขป้ายทะเบียนรถ
-    //     capacity คือ จำนวนตัวอักษร
-    
+    //     capacity คือ จำนวนป้ายทะเบียนสูงสุดที่เก็บได้
+    //      MAX_LEN คือ จำนวนตัวเลขและอักษรสูงสุด
     //RI 1. license != null                                  (ต้องมีอยู่จริง)
     //   2. ไม่มีสมาชิกใน license เป็น null                    (ไม่มีlicenseใดเป็น null)
     //   3. ไม่มีสมาชิกใน license เป็นสตริงว่าง "" และ ไม่มีสมาชิกใน license ซ้ำกัน       (ไม่มีlicenseที่เป็นสตริงว่างหรือlicenseห้ามซ้ำกัน)
@@ -33,11 +33,10 @@ public class BoundedStack {
         assert license != null : "license is not null";
         assert license.size() <= capacity : "license count must not exceed capacity";
     
-        //assert capacity > 0 : "capacity must be positive";
         Set<String> seen = new HashSet<>();
         for (String s : license) {
             assert s != null : "license ต้องไม่มีสมาชิกเป็น null";
-            assert s != "" : "license ต้องไม่มีสมาชิกเป็นสตริงว่าง";
+            assert !s.isEmpty() : "license ต้องไม่มีสมาชิกเป็นสตริงว่าง";
             assert s.length() <= MAX_LEN : "license ต้องไม่เกิน 8 ตัวอักษร";
             assert seen.add(s) : "Dupplicate license: " + s;
         }
@@ -47,7 +46,6 @@ public class BoundedStack {
     
     public BoundedStack() {
         this.license = new ArrayList<>();
-        //this.capacity = 8;
         checkRep();
     } 
     /**
@@ -58,11 +56,10 @@ public class BoundedStack {
        if (initial == null || initial.size() > capacity) throw new IllegalArgumentException("initial must not be null or initial must not exceed capacity");
         Set<String> seen = new HashSet<>();
        for (String s : initial) {
-            if (s == null || s == "" ) throw new IllegalArgumentException("initial must not contain null or empty license");
+            if (s == null || s.isEmpty() ) throw new IllegalArgumentException("initial must not contain null or empty license");
             if (s.length() > MAX_LEN) throw new IllegalArgumentException("initial must not contain license exceeding 8 characters");
             if (!seen.add(s)) throw new IllegalArgumentException("initial must not contain duplicate license");
         }
-        //this.capacity = capacity;
         this.license = new ArrayList<>(initial); 
         checkRep();
  }
@@ -74,7 +71,7 @@ public class BoundedStack {
  * @throws IllegalArgumentException ถ้า s เป็น null
  */
 public boolean push(String s) {
-    if (s == null || s == "") throw new IllegalArgumentException("cannot push null or empty license");
+    if (s == null || s.isEmpty()) throw new IllegalArgumentException("cannot push null or empty license");
     if (s.length() > MAX_LEN ) return false; // ไม่ throw exception แต่ return false ถ้าเกิน 8 ตัวอักษร
     if (license.size() >= capacity || license.contains(s)) return false;
     license.add(s);

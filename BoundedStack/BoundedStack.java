@@ -66,10 +66,10 @@ public class BoundedStack {
  }
     // ===== Mutators =====
  /**  
- * เพิ่ม s เข้าไปบนสุดของสแตก
+ * เพิ่ม licenses เข้าไปบนสุดของสแตก
  * @param licenses สมาชิกที่จะ push, ต้องไม่เป็น null
- * @return true ถ้า push สำเร็จ, false ถ้า s ซ้ำกับสมาชิกที่มีอยู่แล้วหรือสแตกเต็มแล้ว
- * @throws IllegalArgumentException ถ้า s เป็น null
+ * @return true ถ้า push สำเร็จ, false ถ้า licenses ซ้ำกับสมาชิกที่มีอยู่แล้วหรือสแตกเต็มแล้ว
+ * @throws IllegalArgumentException ถ้า licenses เป็น null
  */
 public boolean push(String licenses) {
     if (licenses == null || licenses.isEmpty()) throw new IllegalArgumentException("cannot push null or empty license");

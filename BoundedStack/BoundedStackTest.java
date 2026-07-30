@@ -92,7 +92,8 @@ public class BoundedStackTest {
 
     // --- Mutator:  ---
     private static void testAdd() {
-        System.out.println("\n-- Add --");
+        System.out.println("\n-- Mutator --");
+        System.out.println(" --- Add ---");
 
         BoundedStack license = new BoundedStack();
         check("push(license) -> returns true", license.push("ABCD1234"));

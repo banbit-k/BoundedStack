@@ -8,8 +8,8 @@ public class BoundedStack {
 //       ===== representation =====
     private final List<String> license ;
     public static final int capacity = 100 ;
-    public static final int MAX_LEN = 8;
-
+    public static final int MAX_LEN = 8;    
+    
     /** 
     //AF license คือ เลขป้ายทะเบียนรถ
     //     capacity คือ จำนวนป้ายทะเบียนสูงสุดที่เก็บได้
@@ -28,23 +28,24 @@ public class BoundedStack {
     //     ดังนั้นผู้เรียกจะแก้ไข list ที่คืนกลับไปไม่ส่งผลต่อ rep ภายใน
     //   - String เป็น immutable อยู่แล้ว จึงไม่ต้องกังวลเรื่องการแก้ไของค์ประกอบภายใน list
     */
-   
+    
     private void checkRep() {
         assert license != null : "license is not null";
         assert license.size() <= capacity : "license count must not exceed capacity";
-    
+      
         Set<String> seen = new HashSet<>();
-        for (String s : license) {
-            assert s != null : "license ต้องไม่มีสมาชิกเป็น null";
-            assert !s.isEmpty() : "license ต้องไม่มีสมาชิกเป็นสตริงว่าง";
-            assert s.length() <= MAX_LEN : "license ต้องไม่เกิน 8 ตัวอักษร";
-            assert seen.add(s) : "Dupplicate license: " + s;
+        for (String set : license) {
+            assert set != null : "license ต้องไม่มีสมาชิกเป็น null";
+            assert !set.isEmpty() : "license ต้องไม่มีสมาชิกเป็นสตริงว่าง";
+            assert set.length() <= MAX_LEN : "license ต้องไม่เกิน 8 ตัวอักษร";
+            assert seen.add(set) : "Dupplicate license: " + set;
         }
 
      }
     // ===== Creator =====
     
     public BoundedStack() {
+
         this.license = new ArrayList<>();
         checkRep();
     } 
@@ -55,41 +56,29 @@ public class BoundedStack {
     public BoundedStack(List<String> initial) {
        if (initial == null || initial.size() > capacity) throw new IllegalArgumentException("initial must not be null or initial must not exceed capacity");
         Set<String> seen = new HashSet<>();
-       for (String s : initial) {
-            if (s == null || s.isEmpty() ) throw new IllegalArgumentException("initial must not contain null or empty license");
-            if (s.length() > MAX_LEN) throw new IllegalArgumentException("initial must not contain license exceeding 8 characters");
-            if (!seen.add(s)) throw new IllegalArgumentException("initial must not contain duplicate license");
+       for (String set : initial) {
+            if (set == null || set.isEmpty() ) throw new IllegalArgumentException("initial must not contain null or empty license");
+            if (set.length() > MAX_LEN) throw new IllegalArgumentException("initial must not contain license exceeding 8 characters");
+            if (!seen.add(set)) throw new IllegalArgumentException("initial must not contain duplicate license");
         }
         this.license = new ArrayList<>(initial); 
         checkRep();
  }
     // ===== Mutators =====
  /**  
- * เพิ่ม s เข้าไปบนสุดของสแตก
- * @param s สมาชิกที่จะ push, ต้องไม่เป็น null
- * @return true ถ้า push สำเร็จ, false ถ้า s ซ้ำกับสมาชิกที่มีอยู่แล้วหรือสแตกเต็มแล้ว
- * @throws IllegalArgumentException ถ้า s เป็น null
+ * เพิ่ม licenses เข้าไปบนสุดของสแตก
+ * @param licenses สมาชิกที่จะ push, ต้องไม่เป็น null
+ * @return true ถ้า push สำเร็จ, false ถ้า licenses ซ้ำกับสมาชิกที่มีอยู่แล้วหรือสแตกเต็มแล้ว
+ * @throws IllegalArgumentException ถ้า licenses เป็น null
  */
-public boolean push(String s) {
-    if (s == null || s.isEmpty()) throw new IllegalArgumentException("cannot push null or empty license");
-    if (s.length() > MAX_LEN ) return false; // ไม่ throw exception แต่ return false ถ้าเกิน 8 ตัวอักษร
-    if (license.size() >= capacity || license.contains(s)) return false;
-    license.add(s);
+public boolean push(String licenses) {
+    if (licenses == null || licenses.isEmpty()) throw new IllegalArgumentException("cannot push null or empty license");
+    if (licenses.length() > MAX_LEN ) return false; // ไม่ throw exception แต่ return false ถ้าเกิน 8 ตัวอักษร
+    if (license.size() >= capacity || license.contains(licenses)) return false;
+    license.add(licenses);
     checkRep();
     return true;
 }
-    /**
-     * @param licenses เลขป้ายทะเบียนรถ
-     * @return true ลบสำเร็จ, false ถ้าไม่พบ
-     */
-    public boolean remove(String licenses) {
-        if (!license.contains(licenses)) return false;
-
-        boolean removed = license.remove(licenses);
-        checkRep();
-        return removed;
-    }
-
     //===== Observers =====
 
     public int size() {
